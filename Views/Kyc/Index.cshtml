@@ -1,0 +1,277 @@
+﻿@model KYC.ViewModels.KycFormViewModel
+@* This line at the top tells Razor the type of the Model *@
+
+<form asp-action="Create" method="post"> @* Or whatever your POST action is *@
+    @Html.AntiForgeryToken()
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    @* --- Accessing Direct Properties of KycFormViewModel --- *@
+    <h4>Personal Details</h4>
+    <div class="form-group">
+        <label asp-for="FirstName"></label>
+        <input asp-for="FirstName" class="form-control" />
+        <span asp-validation-for="FirstName" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="LastName"></label>
+        <input asp-for="LastName" class="form-control" />
+        <span asp-validation-for="LastName" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="EmployeeId"></label>
+        <input asp-for="EmployeeId" class="form-control" type="number" />
+        <span asp-validation-for="EmployeeId" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="DateOfBirth"></label>
+        <input asp-for="DateOfBirth" class="form-control" type="date" />
+        <span asp-validation-for="DateOfBirth" class="text-danger"></span>
+    </div>
+    @* ... other direct properties like Gender, CitizenshipNumber, Nationality, etc. ... *@
+
+    <hr />
+
+    @* --- Accessing Properties of Nested ViewModels --- *@
+
+    @* Permanent Address (AddressFormViewModel) *@
+    <h4>Permanent Address</h4>
+    <div class="form-group">
+        <label asp-for="PermanentAddress.SelectedProvince"></label>
+        <select asp-for="PermanentAddress.SelectedProvince" asp-items="Model.PermanentAddress.Provinces"
+            class="form-control province-dropdown" data-district-dropdown-id="PermanentAddress_SelectedDistrict">
+            <option value="">-- Select Province --</option>
+        </select>
+        <span asp-validation-for="PermanentAddress.SelectedProvince" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="PermanentAddress.SelectedDistrict"></label>
+        <select asp-for="PermanentAddress.SelectedDistrict" asp-items="Model.PermanentAddress.Districts"
+            class="form-control district-dropdown" id="PermanentAddress_SelectedDistrict">
+            <option value="">-- Select District --</option>
+        </select>
+        <span asp-validation-for="PermanentAddress.SelectedDistrict" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="PermanentAddress.Municipality"></label>
+        <input asp-for="PermanentAddress.Municipality" class="form-control" />
+        <span asp-validation-for="PermanentAddress.Municipality" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="PermanentAddress.Ward"></label>
+        <input asp-for="PermanentAddress.Ward" class="form-control" type="number" />
+        <span asp-validation-for="PermanentAddress.Ward" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="PermanentAddress.Tole"></label>
+        <input asp-for="PermanentAddress.Tole" class="form-control" />
+        <span asp-validation-for="PermanentAddress.Tole" class="text-danger"></span>
+    </div>
+    @* ... other PermanentAddress fields ... *@
+
+    <hr />
+
+    @* Temporary Address (AddressFormViewModel?) - Nullable, so check if you need to *@
+    <h4>Temporary Address (if different)</h4>
+    @* Since TemporaryAddress is initialized in your constructor, you don't strictly need a null check here
+    for accessing its properties, but it's good practice if it could ever be null.
+    However, if it's always initialized, you can access directly. *@
+    <div class="form-group">
+        <label asp-for="TemporaryAddress.SelectedProvince"></label>
+        <select asp-for="TemporaryAddress.SelectedProvince" asp-items="Model.TemporaryAddress.Provinces"
+            class="form-control province-dropdown" data-district-dropdown-id="TemporaryAddress_SelectedDistrict">
+            <option value="">-- Select Province --</option>
+        </select>
+        <span asp-validation-for="TemporaryAddress.SelectedProvince" class="text-danger"></span>
+    </div>
+    @* ... other TemporaryAddress fields ... *@
+
+    <hr />
+
+    @* Bank Details (BankDetailFormViewModel) *@
+    <h4>Bank Details</h4>
+    <div class="form-group">
+        <label asp-for="BankDetails.BankName"></label>
+        <input asp-for="BankDetails.BankName" class="form-control" />
+        <span asp-validation-for="BankDetails.BankName" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="BankDetails.AccountNumber"></label>
+        <input asp-for="BankDetails.AccountNumber" class="form-control" />
+        <span asp-validation-for="BankDetails.AccountNumber" class="text-danger"></span>
+    </div>
+    @* ... other BankDetails fields ... *@
+
+    <hr />
+
+    @* Other Details (OtherDetailsFormViewModel) *@
+    <h4>Other Details</h4>
+    <div class="form-group">
+        <label asp-for="OtherDetails.FatherName"></label>
+        <input asp-for="OtherDetails.FatherName" class="form-control" />
+        <span asp-validation-for="OtherDetails.FatherName" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="OtherDetails.MotherName"></label>
+        <input asp-for="OtherDetails.MotherName" class="form-control" />
+        <span asp-validation-for="OtherDetails.MotherName" class="text-danger"></span>
+    </div>
+    @* ... other OtherDetails fields ... *@
+
+    <hr />
+
+    @* Nominee (NomineeFormViewModel?) - Nullable, but initialized in your constructor *@
+    <h4>Nominee Details</h4>
+    <div class="form-group">
+        <label asp-for="Nominee.FullName"></label>
+        <input asp-for="Nominee.FullName" class="form-control" />
+        <span asp-validation-for="Nominee.FullName" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Nominee.Relationship"></label>
+        <input asp-for="Nominee.Relationship" class="form-control" />
+        <span asp-validation-for="Nominee.Relationship" class="text-danger"></span>
+    </div>
+    @* ... other Nominee fields ... *@
+
+
+    @* For collections like Documents or FamilyMembers (if you add them back): *@
+    @*
+    <h4>Documents</h4>
+    <div id="documentsContainer">
+        @for (int i = 0; i < Model.Documents.Count; i++) { <div class="document-item">
+            <input type="hidden" asp-for="Documents[i].ExistingImagePath" /> // If editing
+            <div class="form-group">
+                <label asp-for="Documents[i].DocumentType"></label>
+                <input asp-for="Documents[i].DocumentType" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label asp-for="Documents[i].DocumentImage"></label>
+                <input asp-for="Documents[i].DocumentImage" type="file" class="form-control-file" />
+            </div>
+            // ... other document fields
+    </div>
+    }
+    </div>
+    <button type="button" id="addDocumentButton">Add Document</button> // For JS to add more
+    *@
+
+
+    <div class="form-group">
+        <input type="submit" value="Submit KYC" class="btn btn-primary" />
+    </div>
+</form>
+
+@section Scripts {
+@* Ensure this is at the start of the line *@
+@{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+<script>
+
+    document.addEventListener('DOMContentLoaded', function () { // Ensure DOM is ready
+
+        // --- Cascading Dropdown Logic ---
+        // Fetch and populate all province dropdowns at page load
+        const provinceDropdowns = document.querySelectorAll('.province-dropdown');
+
+        fetch('/api/lookupapi/provinces')
+            .then(response => response.json())
+            .then(provinces => {
+                console.log('Provinces loaded:', provinces);
+                provinceDropdowns.forEach(function (provinceSelectElement) {
+                    // Remove all options except the first (placeholder)
+                    provinceSelectElement.innerHTML = '<option value="">-- Select Province --</option>';
+                    if (provinces && provinces.length > 0) {
+                        provinces.forEach(function (province) {
+                            let option = document.createElement('option');
+                            option.value = province.id;
+                            option.textContent = province.name;
+                            provinceSelectElement.appendChild(option);
+                        });
+                    }
+                });
+            })
+            .catch(error => {
+                console.error('Error loading provinces:', error);
+                provinceDropdowns.forEach(function (provinceSelectElement) {
+                    provinceSelectElement.innerHTML = '<option value="">-- Error Loading Provinces --</option>';
+                });
+            });
+
+        provinceDropdowns.forEach(function (provinceSelectElement) {
+            provinceSelectElement.addEventListener('change', async function (event) {
+                const selectedProvince = event.target.value; // Get value from the changed select
+                const districtDropdownId = event.target.dataset.districtDropdownId; // Get data attribute
+                const districtSelectElement = document.getElementById(districtDropdownId);
+
+                if (!districtSelectElement) {
+                    console.error('District dropdown not found with ID:', districtDropdownId);
+                    return;
+                }
+
+                // Clear existing options and add loading message
+                districtSelectElement.innerHTML = ''; // Clear existing options
+                let loadingOption = document.createElement('option');
+                loadingOption.value = '';
+                loadingOption.textContent = '-- Loading Districts --';
+                districtSelectElement.appendChild(loadingOption);
+
+                if (selectedProvince && selectedProvince !== '') {
+                    try {
+                        const response = await fetch('/api/LookupApi/districts/' + encodeURIComponent(selectedProvince));
+                        console.log('Fetching districts for province:', response);
+                        if (!response.ok) {
+                            console.error("Error fetching districts. Status:", response.status);
+                            districtSelectElement.innerHTML = ''; // Clear
+                            let errorOption = document.createElement('option');
+                            errorOption.value = '';
+                            errorOption.textContent = '-- Error Loading --';
+                            districtSelectElement.appendChild(errorOption);
+                            return;
+                        }
+
+                        const districts = await response.json();
+
+                        districtSelectElement.innerHTML = ''; // Clear loading message
+                        let defaultOption = document.createElement('option');
+                        defaultOption.value = '';
+                        defaultOption.textContent = '-- Select District --';
+                        districtSelectElement.appendChild(defaultOption);
+
+                        if (districts && districts.length > 0) {
+                            districts.forEach(function (district) {
+                                let option = document.createElement('option');
+                                option.value = district.id;
+                                option.textContent = district.name;
+                                districtSelectElement.appendChild(option);
+                            });
+                        } else {
+                            districtSelectElement.innerHTML = ''; // Clear
+                            let noDistrictOption = document.createElement('option');
+                            noDistrictOption.value = '';
+                            noDistrictOption.textContent = '-- No Districts Found --';
+                            districtSelectElement.appendChild(noDistrictOption);
+                        }
+                    } catch (error) {
+                        console.error("Network error or other issue fetching districts:", error);
+                        districtSelectElement.innerHTML = ''; // Clear
+                        let networkErrorOption = document.createElement('option');
+                        networkErrorOption.value = '';
+                        networkErrorOption.textContent = '-- Error Loading (Network) --';
+                        districtSelectElement.appendChild(networkErrorOption);
+                    }
+                } else {
+                    districtSelectElement.innerHTML = ''; // Clear
+                    let selectProvinceOption = document.createElement('option');
+                    selectProvinceOption.value = '';
+                    selectProvinceOption.textContent = '-- Select Province First --';
+                    districtSelectElement.appendChild(selectProvinceOption);
+                }
+            });
+        });
+
+
+    });
+</script>}
