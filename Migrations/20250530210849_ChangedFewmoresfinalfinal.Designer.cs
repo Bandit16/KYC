@@ -4,16 +4,19 @@ using KYC.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace KYC.Data.Migrations
+namespace KYC.Migrations
 {
     [DbContext(typeof(KycContext))]
-    partial class KycContextModelSnapshot : ModelSnapshot
+    [Migration("20250530210849_ChangedFewmoresfinalfinal")]
+    partial class ChangedFewmoresfinalfinal
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -22,29 +25,7 @@ namespace KYC.Data.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("KYC.Models.District", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("ProvinceId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ProvinceId");
-
-                    b.ToTable("Districts");
-                });
-
-            modelBuilder.Entity("KYC.Models.KycFormModel+Address", b =>
+            modelBuilder.Entity("KYC.Models.Address", b =>
                 {
                     b.Property<int>("AddressId")
                         .ValueGeneratedOnAdd()
@@ -52,22 +33,18 @@ namespace KYC.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AddressId"));
 
+                    b.Property<string>("AddressType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("District")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("MemberId")
+                    b.Property<int?>("MemberId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Mobile")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Municipality")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Phone")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -79,13 +56,8 @@ namespace KYC.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Type")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Ward")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Ward")
+                        .HasColumnType("int");
 
                     b.HasKey("AddressId");
 
@@ -94,7 +66,7 @@ namespace KYC.Data.Migrations
                     b.ToTable("Addresses");
                 });
 
-            modelBuilder.Entity("KYC.Models.KycFormModel+BankDetail", b =>
+            modelBuilder.Entity("KYC.Models.BankDetail", b =>
                 {
                     b.Property<int>("BankDetailId")
                         .ValueGeneratedOnAdd()
@@ -119,12 +91,35 @@ namespace KYC.Data.Migrations
 
                     b.HasKey("BankDetailId");
 
-                    b.HasIndex("MemberId");
+                    b.HasIndex("MemberId")
+                        .IsUnique();
 
                     b.ToTable("BankDetails");
                 });
 
-            modelBuilder.Entity("KYC.Models.KycFormModel+Document", b =>
+            modelBuilder.Entity("KYC.Models.District", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ProvinceId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProvinceId");
+
+                    b.ToTable("Districts");
+                });
+
+            modelBuilder.Entity("KYC.Models.Document", b =>
                 {
                     b.Property<int>("DocumentId")
                         .ValueGeneratedOnAdd()
@@ -156,78 +151,10 @@ namespace KYC.Data.Migrations
 
                     b.HasKey("DocumentId");
 
-                    b.HasIndex("MemberId");
-
                     b.ToTable("Documents");
                 });
 
-            modelBuilder.Entity("KYC.Models.KycFormModel+EmploymentDetail", b =>
-                {
-                    b.Property<int>("EmploymentId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("EmploymentId"));
-
-                    b.Property<string>("Department")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("EmployerName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("JoinDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("MemberId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Position")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("EmploymentId");
-
-                    b.HasIndex("MemberId");
-
-                    b.ToTable("EmploymentDetails");
-                });
-
-            modelBuilder.Entity("KYC.Models.KycFormModel+FamilyMember", b =>
-                {
-                    b.Property<int>("FamilyMemberId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("FamilyMemberId"));
-
-                    b.Property<string>("CitizenshipNumber")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("DateOfBirth")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("MemberId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Relationship")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("FamilyMemberId");
-
-                    b.HasIndex("MemberId");
-
-                    b.ToTable("FamilyMembers");
-                });
-
-            modelBuilder.Entity("KYC.Models.KycFormModel+Member", b =>
+            modelBuilder.Entity("KYC.Models.Member", b =>
                 {
                     b.Property<int>("MemberId")
                         .ValueGeneratedOnAdd()
@@ -235,6 +162,10 @@ namespace KYC.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MemberId"));
 
+                    b.Property<string>("CitizenshipIssueDistrict")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("CitizenshipNumber")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -242,7 +173,14 @@ namespace KYC.Data.Migrations
                     b.Property<DateTime>("DateOfBirth")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("FullName")
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("EmployeeId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("FirstName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -250,17 +188,89 @@ namespace KYC.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("MaritalStatus")
+                    b.Property<string>("LastName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Occupation")
+                    b.Property<string>("MiddleName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("MobileNumber")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Nationality")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("MemberId");
 
                     b.ToTable("Members");
+                });
+
+            modelBuilder.Entity("KYC.Models.Nominee", b =>
+                {
+                    b.Property<int>("NomineeId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("NomineeId"));
+
+                    b.Property<string>("CitizenshipNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FullName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("MemberId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Relationship")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("NomineeId");
+
+                    b.HasIndex("MemberId")
+                        .IsUnique()
+                        .HasFilter("[MemberId] IS NOT NULL");
+
+                    b.ToTable("Nominee");
+                });
+
+            modelBuilder.Entity("KYC.Models.OtherDetails", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("FatherName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("GrandFatherName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("MemberId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("MotherName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SpouseName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MemberId")
+                        .IsUnique();
+
+                    b.ToTable("OtherDetails");
                 });
 
             modelBuilder.Entity("KYC.Models.Province", b =>
@@ -280,6 +290,24 @@ namespace KYC.Data.Migrations
                     b.ToTable("Provinces");
                 });
 
+            modelBuilder.Entity("KYC.Models.Address", b =>
+                {
+                    b.HasOne("KYC.Models.Member", "Member")
+                        .WithMany("Addresses")
+                        .HasForeignKey("MemberId");
+
+                    b.Navigation("Member");
+                });
+
+            modelBuilder.Entity("KYC.Models.BankDetail", b =>
+                {
+                    b.HasOne("KYC.Models.Member", null)
+                        .WithOne("BankDetails")
+                        .HasForeignKey("KYC.Models.BankDetail", "MemberId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("KYC.Models.District", b =>
                 {
                     b.HasOne("KYC.Models.Province", "Province")
@@ -291,62 +319,33 @@ namespace KYC.Data.Migrations
                     b.Navigation("Province");
                 });
 
-            modelBuilder.Entity("KYC.Models.KycFormModel+Address", b =>
+            modelBuilder.Entity("KYC.Models.Nominee", b =>
                 {
-                    b.HasOne("KYC.Models.KycFormModel+Member", null)
-                        .WithMany("Addresses")
-                        .HasForeignKey("MemberId")
+                    b.HasOne("KYC.Models.Member", null)
+                        .WithOne("Nominee")
+                        .HasForeignKey("KYC.Models.Nominee", "MemberId");
+                });
+
+            modelBuilder.Entity("KYC.Models.OtherDetails", b =>
+                {
+                    b.HasOne("KYC.Models.Member", null)
+                        .WithOne("OtherDetails")
+                        .HasForeignKey("KYC.Models.OtherDetails", "MemberId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("KYC.Models.KycFormModel+BankDetail", b =>
-                {
-                    b.HasOne("KYC.Models.KycFormModel+Member", null)
-                        .WithMany("BankDetails")
-                        .HasForeignKey("MemberId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("KYC.Models.KycFormModel+Document", b =>
-                {
-                    b.HasOne("KYC.Models.KycFormModel+Member", null)
-                        .WithMany("Documents")
-                        .HasForeignKey("MemberId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("KYC.Models.KycFormModel+EmploymentDetail", b =>
-                {
-                    b.HasOne("KYC.Models.KycFormModel+Member", null)
-                        .WithMany("EmploymentDetails")
-                        .HasForeignKey("MemberId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("KYC.Models.KycFormModel+FamilyMember", b =>
-                {
-                    b.HasOne("KYC.Models.KycFormModel+Member", null)
-                        .WithMany("FamilyMembers")
-                        .HasForeignKey("MemberId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("KYC.Models.KycFormModel+Member", b =>
+            modelBuilder.Entity("KYC.Models.Member", b =>
                 {
                     b.Navigation("Addresses");
 
-                    b.Navigation("BankDetails");
+                    b.Navigation("BankDetails")
+                        .IsRequired();
 
-                    b.Navigation("Documents");
+                    b.Navigation("Nominee");
 
-                    b.Navigation("EmploymentDetails");
-
-                    b.Navigation("FamilyMembers");
+                    b.Navigation("OtherDetails")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("KYC.Models.Province", b =>

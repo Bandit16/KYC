@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Http;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 // Remove: using static KYC.Models.KycFormModel; // If KYC.Models.KycFormModel is your domain model container
 // Remove: using KYC.Models; // If this brings in domain models directly for properties
 
@@ -11,8 +13,6 @@ namespace KYC.ViewModels
     // ViewModel for Address fields in the form
     public class AddressFormViewModel
     {
-        // Use string for SelectedProvince/District if they are names,
-        // or int if they are IDs and you have corresponding SelectLists.
         [Required]
         public string SelectedProvince { get; set; } = string.Empty;
         [Required]
@@ -20,21 +20,20 @@ namespace KYC.ViewModels
         [Required]
         public string Municipality { get; set; } = string.Empty;
         [Required]
-        public int Ward { get; set; } // Assuming Ward is a string, adjust if int
+        public int Ward { get; set; }
         [Required]
         public string Tole { get; set; } = string.Empty;
 
-        // For dropdowns (populated in controller)
-        public IEnumerable<SelectListItem>? Provinces { get; set; }
-        public IEnumerable<SelectListItem>? Districts { get; set; }
     }
 
-    // ViewModel for BankDetail fields in the form
     public class BankDetailFormViewModel
     {
         [Required]
+        [DisplayName("Bank Name")]
+
         public string BankName { get; set; } = string.Empty;
         [Required]
+        [DisplayName("Account Number")]
         public string AccountNumber { get; set; } = string.Empty;
         [Required]
         public string Branch { get; set; } = string.Empty;
@@ -62,53 +61,56 @@ namespace KYC.ViewModels
         [Required]
         public string CitizenshipNumber { get; set; } = string.Empty;
     }
-
-    public class KycFormViewModel
+    public class MemberFormViewModel
     {
-        public int MemberId { get; set; } // Useful for edit scenarios
-
         [Required(ErrorMessage = "First name is required.")]
+        [DisplayName("First Name")]
         public string FirstName { get; set; } = string.Empty;
-
+        [DisplayName("Middle Name")]
         public string? MiddleName { get; set; }
 
         [Required(ErrorMessage = "Last name is required.")]
+        [DisplayName("Last Name")]
         public string LastName { get; set; } = string.Empty;
 
         [Required]
+        [DisplayName("Employee Id")]
         public int EmployeeId { get; set; }
 
         [Required(ErrorMessage = "Date of birth is required.")]
         [DataType(DataType.Date)]
-        public DateTime DateOfBirth { get; set; } = DateTime.Today; // Default to today or a sensible default
+        [DisplayName("Date of Birth")]
+
+        public DateTime DateOfBirth { get; set; } = DateTime.Today;
 
         [Required(ErrorMessage = "Gender is required.")]
-        public string Gender { get; set; } = string.Empty; // Or use an enum if Gender is an enum
+        public string Gender { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Citizenship number is required.")]
+        [DisplayName("Citizenship Number ")]
         public string CitizenshipNumber { get; set; } = string.Empty;
 
         [Required]
-        public string Nationality { get; set; } = "Nepali"; // Default if applicable
+        public string Nationality { get; set; } = "Nepali";
 
         [Required]
         public string CitizenshipIssueDistrict { get; set; } = string.Empty;
 
-        [Required]
-        [RegularExpression(@"^\d{10}$", ErrorMessage = "Mobile number must be 10 digits.")]
-        public string MobileNumber { get; set; } = string.Empty; // Use string for leading zeros, validate format
+        public int MobileNumber { get; set; }
 
         [Required]
         [EmailAddress]
         public string Email { get; set; } = string.Empty;
-
-        // Nested ViewModels for related entities
+    }
+    public class KycFormViewModel
+    {
+        [Required]
+        public MemberFormViewModel Member { get; set; }
         [Required]
         public AddressFormViewModel PermanentAddress { get; set; }
 
-        public AddressFormViewModel? TemporaryAddress { get; set; } // Optional
+        public AddressFormViewModel? TemporaryAddress { get; set; }
 
-        // For a single BankDetail as per your Member model
         [Required]
         public BankDetailFormViewModel BankDetails { get; set; }
 
@@ -120,6 +122,7 @@ namespace KYC.ViewModels
 
         public KycFormViewModel()
         {
+            Member = new MemberFormViewModel();
             PermanentAddress = new AddressFormViewModel();
             BankDetails = new BankDetailFormViewModel();
             OtherDetails = new OtherDetailsFormViewModel();

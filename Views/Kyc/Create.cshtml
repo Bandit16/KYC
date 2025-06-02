@@ -1,55 +1,82 @@
 ﻿@model KYC.ViewModels.KycFormViewModel
-@* This line at the top tells Razor the type of the Model *@
-
-<form asp-action="Create" method="post"> @* Or whatever your POST action is *@
+@{
+ViewData["Title"] = "Create KYC";
+}
+<form asp-action="Create" method="post">
     @Html.AntiForgeryToken()
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-    @* --- Accessing Direct Properties of KycFormViewModel --- *@
     <h4>Personal Details</h4>
     <div class="form-group">
-        <label asp-for="FirstName"></label>
-        <input asp-for="FirstName" class="form-control" />
-        <span asp-validation-for="FirstName" class="text-danger"></span>
+        <label asp-for="Member.FirstName"></label>
+        <input asp-for="Member.FirstName" class="form-control" />
+        <span asp-validation-for="Member.FirstName" class="text-danger"></span>
     </div>
 
     <div class="form-group">
-        <label asp-for="LastName"></label>
-        <input asp-for="LastName" class="form-control" />
-        <span asp-validation-for="LastName" class="text-danger"></span>
+        <label asp-for="Member.LastName"></label>
+        <input asp-for="Member.LastName" class="form-control" />
+        <span asp-validation-for="Member.LastName" class="text-danger"></span>
     </div>
 
     <div class="form-group">
-        <label asp-for="EmployeeId"></label>
-        <input asp-for="EmployeeId" class="form-control" type="number" />
-        <span asp-validation-for="EmployeeId" class="text-danger"></span>
+        <label asp-for="Member.EmployeeId"></label>
+        <input asp-for="Member.EmployeeId" class="form-control" />
+        <span asp-validation-for="Member.EmployeeId" class="text-danger"></span>
     </div>
 
     <div class="form-group">
-        <label asp-for="DateOfBirth"></label>
-        <input asp-for="DateOfBirth" class="form-control" type="date" />
-        <span asp-validation-for="DateOfBirth" class="text-danger"></span>
+        <label asp-for="Member.DateOfBirth"></label>
+        <input asp-for="Member.DateOfBirth" class="form-control" type="date" />
+        <span asp-validation-for="Member.DateOfBirth" class="text-danger"></span>
     </div>
-    @* ... other direct properties like Gender, CitizenshipNumber, Nationality, etc. ... *@
-
+    <div class="form-group">
+        <label asp-for="Member.Gender"></label>
+        <input asp-for="Member.Gender" class="form-control" />
+        <span asp-validation-for="Member.Gender" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Member.CitizenshipNumber"></label>
+        <input asp-for="Member.CitizenshipNumber" class="form-control" />
+        <span asp-validation-for="Member.CitizenshipNumber" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Member.Nationality"></label>
+        <input asp-for="Member.Nationality" class="form-control" />
+        <span asp-validation-for="Member.Nationality" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Member.CitizenshipIssueDistrict"></label>
+        <input asp-for="Member.CitizenshipIssueDistrict" class="form-control" />
+        <span asp-validation-for="Member.CitizenshipIssueDistrict" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Member.MobileNumber"></label>
+        <input asp-for="Member.MobileNumber" class="form-control" />
+        <span asp-validation-for="Member.MobileNumber" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Member.Email"></label>
+        <input asp-for="Member.Email" class="form-control" type="email" />
+        <span asp-validation-for="Member.Email" class="text-danger"></span>
+    </div>
     <hr />
 
-    @* --- Accessing Properties of Nested ViewModels --- *@
 
     @* Permanent Address (AddressFormViewModel) *@
     <h4>Permanent Address</h4>
     <div class="form-group">
         <label asp-for="PermanentAddress.SelectedProvince"></label>
-        <select asp-for="PermanentAddress.SelectedProvince" asp-items="Model.PermanentAddress.Provinces"
-            class="form-control province-dropdown" data-district-dropdown-id="PermanentAddress_SelectedDistrict">
+        <select asp-for="PermanentAddress.SelectedProvince" class="form-control province-dropdown"
+            data-district-dropdown-id="PermanentAddress_SelectedDistrict">
             <option value="">-- Select Province --</option>
         </select>
         <span asp-validation-for="PermanentAddress.SelectedProvince" class="text-danger"></span>
     </div>
     <div class="form-group">
         <label asp-for="PermanentAddress.SelectedDistrict"></label>
-        <select asp-for="PermanentAddress.SelectedDistrict" asp-items="Model.PermanentAddress.Districts"
-            class="form-control district-dropdown" id="PermanentAddress_SelectedDistrict">
+        <select asp-for="PermanentAddress.SelectedDistrict" class="form-control district-dropdown"
+            id="PermanentAddress_SelectedDistrict">
             <option value="">-- Select District --</option>
         </select>
         <span asp-validation-for="PermanentAddress.SelectedDistrict" class="text-danger"></span>
@@ -69,25 +96,44 @@
         <input asp-for="PermanentAddress.Tole" class="form-control" />
         <span asp-validation-for="PermanentAddress.Tole" class="text-danger"></span>
     </div>
-    @* ... other PermanentAddress fields ... *@
 
     <hr />
 
-    @* Temporary Address (AddressFormViewModel?) - Nullable, so check if you need to *@
     <h4>Temporary Address (if different)</h4>
-    @* Since TemporaryAddress is initialized in your constructor, you don't strictly need a null check here
-    for accessing its properties, but it's good practice if it could ever be null.
-    However, if it's always initialized, you can access directly. *@
+
     <div class="form-group">
         <label asp-for="TemporaryAddress.SelectedProvince"></label>
-        <select asp-for="TemporaryAddress.SelectedProvince" asp-items="Model.TemporaryAddress.Provinces"
-            class="form-control province-dropdown" data-district-dropdown-id="TemporaryAddress_SelectedDistrict">
+        <select asp-for="TemporaryAddress.SelectedProvince" class="form-control province-dropdown"
+            data-district-dropdown-id="TemporaryAddress_SelectedDistrict">
             <option value="">-- Select Province --</option>
         </select>
         <span asp-validation-for="TemporaryAddress.SelectedProvince" class="text-danger"></span>
     </div>
-    @* ... other TemporaryAddress fields ... *@
+    <div class="form-group">
+        <label asp-for="TemporaryAddress.SelectedDistrict"></label>
+        <select asp-for="TemporaryAddress.SelectedDistrict" class="form-control district-dropdown"
+            id="TemporaryAddress_SelectedDistrict">
+            <option value="">-- Select District --</option>
+        </select>
+        <span asp-validation-for="TemporaryAddress.SelectedDistrict" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="TemporaryAddress.Municipality"></label>
+        <input asp-for="TemporaryAddress.Municipality" class="form-control" />
+        <span asp-validation-for="TemporaryAddress.Municipality" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="TemporaryAddress.Ward"></label>
+        <input asp-for="TemporaryAddress.Ward" class="form-control" type="number" />
+        <span asp-validation-for="TemporaryAddress.Ward" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="TemporaryAddress.Tole"></label>
+        <input asp-for="TemporaryAddress.Tole" class="form-control" />
+        <span asp-validation-for="TemporaryAddress.Tole" class="text-danger"></span>
+    </div>
 
+    <hr />
     <hr />
 
     @* Bank Details (BankDetailFormViewModel) *@
@@ -102,7 +148,11 @@
         <input asp-for="BankDetails.AccountNumber" class="form-control" />
         <span asp-validation-for="BankDetails.AccountNumber" class="text-danger"></span>
     </div>
-    @* ... other BankDetails fields ... *@
+    <div class="form-group">
+        <label asp-for="BankDetails.Branch"></label>
+        <input asp-for="BankDetails.Branch" class="form-control" />
+        <span asp-validation-for="BankDetails.Branch" class="text-danger"></span>
+    </div>
 
     <hr />
 
@@ -118,11 +168,19 @@
         <input asp-for="OtherDetails.MotherName" class="form-control" />
         <span asp-validation-for="OtherDetails.MotherName" class="text-danger"></span>
     </div>
-    @* ... other OtherDetails fields ... *@
+    <div class="form-group">
+        <label asp-for="OtherDetails.GrandFatherName"></label>
+        <input asp-for="OtherDetails.GrandFatherName" class="form-control" />
+        <span asp-validation-for="OtherDetails.GrandFatherName" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="OtherDetails.SpouseName"></label>
+        <input asp-for="OtherDetails.SpouseName" class="form-control" />
+        <span asp-validation-for="OtherDetails.SpouseName" class="text-danger"></span>
+    </div>
 
     <hr />
 
-    @* Nominee (NomineeFormViewModel?) - Nullable, but initialized in your constructor *@
     <h4>Nominee Details</h4>
     <div class="form-group">
         <label asp-for="Nominee.FullName"></label>
@@ -134,46 +192,26 @@
         <input asp-for="Nominee.Relationship" class="form-control" />
         <span asp-validation-for="Nominee.Relationship" class="text-danger"></span>
     </div>
-    @* ... other Nominee fields ... *@
-
-
-    @* For collections like Documents or FamilyMembers (if you add them back): *@
-    @*
-    <h4>Documents</h4>
-    <div id="documentsContainer">
-        @for (int i = 0; i < Model.Documents.Count; i++) { <div class="document-item">
-            <input type="hidden" asp-for="Documents[i].ExistingImagePath" /> // If editing
-            <div class="form-group">
-                <label asp-for="Documents[i].DocumentType"></label>
-                <input asp-for="Documents[i].DocumentType" class="form-control" />
-            </div>
-            <div class="form-group">
-                <label asp-for="Documents[i].DocumentImage"></label>
-                <input asp-for="Documents[i].DocumentImage" type="file" class="form-control-file" />
-            </div>
-            // ... other document fields
-    </div>
-    }
-    </div>
-    <button type="button" id="addDocumentButton">Add Document</button> // For JS to add more
-    *@
-
-
     <div class="form-group">
-        <input type="submit" value="Submit KYC" class="btn btn-primary" />
-    </div>
+        <label asp-for="Nominee.CitizenshipNumber"></label>
+        <input asp-for="Nominee.CitizenshipNumber" class="form-control" />
+        <span asp-validation-for="Nominee.CitizenshipNumber" class="text-danger"></span>
+
+
+
+
+        <div class="form-group">
+            <input type="submit" value="Submit KYC" class="btn btn-primary" />
+        </div>
 </form>
 
 @section Scripts {
-@* Ensure this is at the start of the line *@
 @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 
 <script>
 
-    document.addEventListener('DOMContentLoaded', function () { // Ensure DOM is ready
+    document.addEventListener('DOMContentLoaded', function () {
 
-        // --- Cascading Dropdown Logic ---
-        // Fetch and populate all province dropdowns at page load
         const provinceDropdowns = document.querySelectorAll('.province-dropdown');
 
         fetch('/api/lookupapi/provinces')
@@ -211,7 +249,6 @@
                     return;
                 }
 
-                // Clear existing options and add loading message
                 districtSelectElement.innerHTML = ''; // Clear existing options
                 let loadingOption = document.createElement('option');
                 loadingOption.value = '';
