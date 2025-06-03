@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using KYC.Data;
 using KYC.Mapping;
 using KYC.Models;
@@ -12,10 +13,10 @@ namespace KYC.ApiControllers
     public class LookupApiController(KycContext dbcontext) : ControllerBase
     {
         [HttpGet("provinces")]
-        public IActionResult GetProvincesList()
+        public async Task<IActionResult> GetProvincesList()
         {
-            var provinces = dbcontext.Provinces.Select(p => p.ProvinceToDto())
-                                                .ToList();
+            var provinces = await dbcontext.Provinces.Select(p => p.ProvinceToDto())
+                                                .ToListAsync();
             if (provinces is null)
             {
                 return NotFound("not found");
@@ -24,10 +25,10 @@ namespace KYC.ApiControllers
             return Ok(provinces);
         }
         [HttpGet("districts/{id}")]
-        public IActionResult GetDistrictsByProvinceId(int id)
+        public async Task<IActionResult> GetDistrictsByProvinceId(int id)
         {
-            var districts = dbcontext.Districts.Where(p => p.ProvinceId == id)
-                                                .ToList();
+            var districts = await dbcontext.Districts.Where(p => p.ProvinceId == id)
+                                                .ToListAsync();
 
             if (districts.Count == 0)
             {
@@ -37,6 +38,16 @@ namespace KYC.ApiControllers
             return Ok(districts.Select(d => d.DistrictToDto()));
 
 
+        }
+        [HttpGet("districts")]
+        public async Task<IActionResult> GetDistricts()
+        {
+            var districts = await dbcontext.Districts.ToListAsync();
+            if (districts.Count == 0)
+            {
+                return NotFound();
+            }
+            return Ok(districts.Select(d => d.DistrictToDto()));
         }
     }
 }

@@ -38,35 +38,35 @@ namespace KYC.Controllers
                 return View(viewModel);
             }
 
-            var memberDomain = viewModel.Member.ToMember();
+            var newMember = viewModel.Member.ToMember();
 
             if (viewModel.PermanentAddress != null)
             {
                 var address = viewModel.PermanentAddress.ToAddress();
                 address.AddressType = "Permanent";
-                memberDomain.Addresses.Add(address);
+                newMember.Addresses.Add(address);
             }
             if (viewModel.TemporaryAddress != null)
             {
                 var temp_address = viewModel.TemporaryAddress.ToAddress();
                 temp_address.AddressType = "Temporary";
-                memberDomain.Addresses.Add(temp_address);
+                newMember.Addresses.Add(temp_address);
             }
             if (viewModel.BankDetails != null)
             {
-                memberDomain.BankDetails = viewModel.BankDetails.ToBankDetail();
+                newMember.BankDetails = viewModel.BankDetails.ToBankDetail();
             }
 
             if (viewModel.OtherDetails != null)
             {
-                memberDomain.OtherDetails = viewModel.OtherDetails.ToOtherDetails();
+                newMember.OtherDetails = viewModel.OtherDetails.ToOtherDetails();
             }
 
             if (viewModel.Nominee != null)
             {
-                memberDomain.Nominee = viewModel.Nominee.ToNominee();
+                newMember.Nominee = viewModel.Nominee.ToNominee();
             }
-            db.Members.Add(memberDomain);
+            db.Members.Add(newMember);
             db.SaveChanges();
             return RedirectToAction("Index", "Home");
 
@@ -123,15 +123,14 @@ namespace KYC.Controllers
             };
             return View(updateViewModel);
         }
-        [HttpPut("edit/{id}")]
+        [HttpPost("edit/{id}")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, KycFormViewModel viewModel)
+        public async Task<IActionResult> Edit(int id, KycFormViewModel updatedViewModel)
         {
             if (!ModelState.IsValid)
             {
-                return View(viewModel);
+                return View(updatedViewModel);
             }
-
             var existingMember = await db.Members
                 .Include(m => m.Addresses)
                 .Include(m => m.BankDetails)
@@ -143,12 +142,152 @@ namespace KYC.Controllers
             {
                 return NotFound();
             }
+            try
+            {
+                //hadto manually set values because couldnt use setvalues as it tried to update my fk.....couldnt use my mapping extension methods
+                existingMember.FirstName = updatedViewModel.Member.FirstName;
+                existingMember.LastName = updatedViewModel.Member.LastName;
+                if (updatedViewModel.Member.MiddleName != null)
+                {
+                    existingMember.MiddleName = updatedViewModel.Member.MiddleName;
+                }
+                existingMember.Gender = updatedViewModel.Member.Gender;
+                existingMember.DateOfBirth = updatedViewModel.Member.DateOfBirth;
+                existingMember.CitizenshipNumber = updatedViewModel.Member.CitizenshipNumber;
+                existingMember.CitizenshipIssueDistrict = updatedViewModel.Member.CitizenshipIssueDistrict;
+                existingMember.MobileNumber = updatedViewModel.Member.MobileNumber;
+                existingMember.Email = updatedViewModel.Member.Email;
+                existingMember.Gender = updatedViewModel.Member.Gender;
+                existingMember.Nationality = updatedViewModel.Member.Nationality;
+                existingMember.EmployeeId = updatedViewModel.Member.EmployeeId;
 
+                if (updatedViewModel.BankDetails != null)
+                {
+                    if (existingMember.BankDetails == null)
+                    {
+                        existingMember.BankDetails = updatedViewModel.BankDetails.ToBankDetail();
+                    }
+                    else
+                    {
+                        var bankDetail = updatedViewModel.BankDetails;
+                        existingMember.BankDetails.BankName = bankDetail.BankName;
+                        existingMember.BankDetails.AccountNumber = bankDetail.AccountNumber;
+                        existingMember.BankDetails.Branch = bankDetail.Branch;
+                    }
+                }
 
-            Console.WriteLine("Edit completed successfully");
-            return RedirectToAction("GetKycById", new { id = id });
+                if (updatedViewModel.OtherDetails != null)
+                {
+                    if (existingMember.OtherDetails == null)
+                    {
+                        existingMember.OtherDetails = updatedViewModel.OtherDetails.ToOtherDetails();
+                    }
+                    else
+                    {
+                        var otherDetails = updatedViewModel.OtherDetails;
+                        existingMember.OtherDetails.FatherName = otherDetails.FatherName;
+                        existingMember.OtherDetails.MotherName = otherDetails.MotherName;
+                        if (otherDetails.SpouseName != null)
+                        {
 
+                            existingMember.OtherDetails.SpouseName = otherDetails.SpouseName;
+                        }
+                    }
+                }
 
+                if (updatedViewModel.Nominee != null)
+                {
+                    if (existingMember.Nominee == null)
+                    {
+                        existingMember.Nominee = updatedViewModel.Nominee.ToNominee();
+                    }
+                    else
+                    {
+                        var nominee = updatedViewModel.Nominee;
+                        existingMember.Nominee.FullName = nominee.FullName;
+                        existingMember.Nominee.Relationship = nominee.Relationship;
+                        existingMember.Nominee.CitizenshipNumber = nominee.CitizenshipNumber;
+
+                    }
+                }
+                else
+                {
+                    existingMember.Nominee = null;
+                }
+
+                var existingPermanentAddress = existingMember.Addresses.FirstOrDefault(a => a.AddressType == "Permanent");
+                if (updatedViewModel.PermanentAddress != null)
+                {
+                    var newPermanentAddress = updatedViewModel.PermanentAddress;
+                    if (existingPermanentAddress == null)
+                    {
+                        var address = newPermanentAddress.ToAddress();
+                        address.AddressType = "Permanent";
+                        existingMember.Addresses.Add(address);
+                    }
+                    else
+                    {
+                        existingPermanentAddress.Province = newPermanentAddress.SelectedProvince;
+                        existingPermanentAddress.District = newPermanentAddress.SelectedDistrict;
+                        existingPermanentAddress.Municipality = newPermanentAddress.Municipality;
+                        existingPermanentAddress.Ward = newPermanentAddress.Ward;
+                        existingPermanentAddress.Tole = newPermanentAddress.Tole;
+                    }
+                }
+                else if (existingPermanentAddress != null)
+                {
+                    existingMember.Addresses.Remove(existingPermanentAddress);
+                }
+
+                var existingTemporaryAddress = existingMember.Addresses.FirstOrDefault(a => a.AddressType == "Temporary");
+                if (updatedViewModel.TemporaryAddress != null && !string.IsNullOrEmpty(updatedViewModel.TemporaryAddress.Municipality))
+                {
+                    var newTemporaryAddress = updatedViewModel.TemporaryAddress;
+                    if (existingTemporaryAddress == null)
+                    {
+                        var address = newTemporaryAddress.ToAddress();
+                        address.AddressType = "Temporary";
+                        existingMember.Addresses.Add(address);
+                    }
+                    else
+                    {
+                        existingTemporaryAddress.Province = newTemporaryAddress.SelectedProvince;
+                        existingTemporaryAddress.District = newTemporaryAddress.SelectedDistrict;
+                        existingTemporaryAddress.Municipality = newTemporaryAddress.Municipality;
+                        existingTemporaryAddress.Ward = newTemporaryAddress.Ward;
+                        existingTemporaryAddress.Tole = newTemporaryAddress.Tole;
+                    }
+                }
+                else if (existingTemporaryAddress != null)
+                {
+                    existingMember.Addresses.Remove(existingTemporaryAddress);
+                }
+
+                await db.SaveChangesAsync();
+                Console.WriteLine("Edit completed successfully");
+                return RedirectToAction("GetKycById", new { id = id });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Edit failed: {ex.Message}");
+                ModelState.AddModelError("", "An error occurred while updating the record.");
+                return View(updatedViewModel);
+            }
+
+        }
+        [HttpPost("Delete/{id}")]
+        [ValidateAntiForgeryToken]
+
+        public async Task<IActionResult> Delete(int id)
+        {
+            var existingMember = await db.Members.FindAsync(id);
+            if (existingMember == null)
+            {
+                return NotFound();
+            }
+            db.Members.Remove(existingMember);
+            await db.SaveChangesAsync();
+            return RedirectToAction("Index", "Kyc");
         }
     }
 }

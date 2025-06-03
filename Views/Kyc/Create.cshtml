@@ -12,6 +12,11 @@ ViewData["Title"] = "Create KYC";
         <input asp-for="Member.FirstName" class="form-control" />
         <span asp-validation-for="Member.FirstName" class="text-danger"></span>
     </div>
+    <div class="form-group">
+        <label asp-for="Member.MiddleName"></label>
+        <input asp-for="Member.MiddleName" class="form-control" />
+        <span asp-validation-for="Member.MiddleName" class="text-danger"></span>
+    </div>
 
     <div class="form-group">
         <label asp-for="Member.LastName"></label>
@@ -47,7 +52,9 @@ ViewData["Title"] = "Create KYC";
     </div>
     <div class="form-group">
         <label asp-for="Member.CitizenshipIssueDistrict"></label>
-        <input asp-for="Member.CitizenshipIssueDistrict" class="form-control" />
+        <select asp-for="Member.CitizenshipIssueDistrict" class="form-control citizenship-district-dropdown">
+            <option value="">-- Select District --</option>
+        </select>
         <span asp-validation-for="Member.CitizenshipIssueDistrict" class="text-danger"></span>
     </div>
     <div class="form-group">
@@ -212,6 +219,7 @@ ViewData["Title"] = "Create KYC";
 
     document.addEventListener('DOMContentLoaded', function () {
 
+
         const provinceDropdowns = document.querySelectorAll('.province-dropdown');
 
         fetch('/api/lookupapi/provinces')
@@ -237,7 +245,35 @@ ViewData["Title"] = "Create KYC";
                     provinceSelectElement.innerHTML = '<option value="">-- Error Loading Provinces --</option>';
                 });
             });
+        const citizenshipDistrictSelect = document.querySelector('.citizenship-district-dropdown');
+        if (citizenshipDistrictSelect) {
+            fetch('/api/LookupApi/districts')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(districts => {
+                    citizenshipDistrictSelect.innerHTML = '<option value="">-- Select District --</option>';
+                    console.log('Citizenship districts loaded:', districts);
 
+                    if (districts && districts.length > 0) {
+                        districts.forEach(function (district) {
+                            let option = document.createElement('option');
+                            option.value = district.name;
+                            option.textContent = district.name;
+                            citizenshipDistrictSelect.appendChild(option);
+                        });
+                    } else {
+                        citizenshipDistrictSelect.innerHTML = '<option value="">-- No Districts Available --</option>';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading citizenship districts:', error);
+                    citizenshipDistrictSelect.innerHTML = '<option value="">-- Error Loading Districts --</option>';
+                });
+        }
         provinceDropdowns.forEach(function (provinceSelectElement) {
             provinceSelectElement.addEventListener('change', async function (event) {
                 const selectedProvince = event.target.value;
@@ -312,3 +348,28 @@ ViewData["Title"] = "Create KYC";
 
     });
 </script>}
+@section Styles {
+<style>
+    /* Add red asterisk to required fields automatically */
+    .form-group label[for] {
+        position: relative;
+    }
+
+    /* Target labels that have required inputs */
+    .form-group:has(input[data-val-required]) label::after,
+    .form-group:has(select[data-val-required]) label::after,
+    .form-group:has(textarea[data-val-required]) label::after {
+        content: " *";
+        color: #dc3545;
+        font-weight: bold;
+        margin-left: 2px;
+    }
+
+    /* Fallback for browsers that don't support :has() */
+    .required-field::after {
+        content: " *";
+        color: #dc3545;
+        font-weight: bold;
+        margin-left: 2px;
+    }
+</style> }
