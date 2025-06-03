@@ -95,8 +95,9 @@ namespace KYC.ViewModels
 
         [Required]
         public string CitizenshipIssueDistrict { get; set; } = string.Empty;
-
-        public int MobileNumber { get; set; }
+        [Required]
+        [Phone]
+        public string MobileNumber { get; set; } = string.Empty;
 
         [Required]
         [EmailAddress]

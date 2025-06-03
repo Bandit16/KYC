@@ -1,0 +1,53 @@
+﻿@model List<KYC.Models.Member>
+    @{
+    ViewData["Title"] = "KYC";
+    }
+
+    <h1>KYC Details</h1>
+
+    <h2>Member Information</h2>
+    @foreach (var item in Model){
+
+
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-3">Employee Id:</dt>
+        <dd class="col-sm-9">@item.EmployeeId</dd>
+
+        <dt class="col-sm-3">First Name:</dt>
+        <dd class="col-sm-9">@item.FirstName</dd>
+
+        @if (!string.IsNullOrEmpty(item.MiddleName))
+        {
+        <dt class="col-sm-3">Middle Name:</dt>
+        <dd class="col-sm-9">@item.MiddleName</dd>
+        }
+
+        <dt class="col-sm-3">Last Name:</dt>
+        <dd class="col-sm-9">@item.LastName</dd>
+
+        <dt class="col-sm-3">Date of Birth:</dt>
+        <dd class="col-sm-9">@item.DateOfBirth.ToString("yyyy-MM-dd")</dd>
+
+        <dt class="col-sm-3">Gender:</dt>
+        <dd class="col-sm-9">@item.Gender</dd>
+
+        <dt class="col-sm-3">Nationality:</dt>
+        <dd class="col-sm-9">@item.Nationality</dd>
+
+        <dt class="col-sm-3">Citizenship Number:</dt>
+        <dd class="col-sm-9">@item.CitizenshipNumber</dd>
+
+        <dt class="col-sm-3">Citizenship Issue District:</dt>
+        <dd class="col-sm-9">@item.CitizenshipIssueDistrict</dd>
+
+        <dt class="col-sm-3">Mobile Number:</dt>
+        <dd class="col-sm-9">@item.MobileNumber</dd>
+
+        <dt class="col-sm-3">Email:</dt>
+        <dd class="col-sm-9">@item.Email</dd>
+    </dl>
+    <a asp-controller="Kyc" asp-action="Edit" asp-route-id="@item.MemberId" class="btn btn-primary btn-sm mt-2">
+        <i class="bi bi-pencil-square"></i> Edit
+    </a>
+    } </div>

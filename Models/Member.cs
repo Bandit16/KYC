@@ -34,7 +34,7 @@ public class Member
     [Required]
     public string CitizenshipIssueDistrict { get; set; } = null!;
 
-    public int MobileNumber { get; set; }
+    public string MobileNumber { get; set; } = null!;
 
     [Required]
     public string Email { get; set; } = null!;

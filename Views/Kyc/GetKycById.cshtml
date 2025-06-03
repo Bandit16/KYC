@@ -1,0 +1,165 @@
+﻿@model KYC.ViewModels.KycFormViewModel
+@{
+ViewData["Title"] = "KYC";
+}
+
+
+<h1>KYC Details</h1>
+
+<div>
+    <h2>Member Information</h2>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-3">Employee Id:</dt>
+        <dd class="col-sm-9">@Model.Member.EmployeeId</dd>
+
+        <dt class="col-sm-3">First Name:</dt>
+        <dd class="col-sm-9">@Model.Member.FirstName</dd>
+
+        @if (!string.IsNullOrEmpty(Model.Member.MiddleName))
+        {
+        <dt class="col-sm-3">Middle Name:</dt>
+        <dd class="col-sm-9">@Model.Member.MiddleName</dd>
+        }
+
+        <dt class="col-sm-3">Last Name:</dt>
+        <dd class="col-sm-9">@Model.Member.LastName</dd>
+
+        <dt class="col-sm-3">Date of Birth:</dt>
+        <dd class="col-sm-9">@Model.Member.DateOfBirth.ToString("yyyy-MM-dd")</dd>
+
+        <dt class="col-sm-3">Gender:</dt>
+        <dd class="col-sm-9">@Model.Member.Gender</dd>
+
+        <dt class="col-sm-3">Nationality:</dt>
+        <dd class="col-sm-9">@Model.Member.Nationality</dd>
+
+        <dt class="col-sm-3">Citizenship Number:</dt>
+        <dd class="col-sm-9">@Model.Member.CitizenshipNumber</dd>
+
+        <dt class="col-sm-3">Citizenship Issue District:</dt>
+        <dd class="col-sm-9">@Model.Member.CitizenshipIssueDistrict</dd>
+
+        <dt class="col-sm-3">Mobile Number:</dt>
+        <dd class="col-sm-9">@Model.Member.MobileNumber</dd>
+
+        <dt class="col-sm-3">Email:</dt>
+        <dd class="col-sm-9">@Model.Member.Email</dd>
+    </dl>
+</div>
+
+<div>
+    <h3>Permanent Address</h3>
+    <hr />
+    @if (Model.PermanentAddress != null)
+    {
+    <dl class="row">
+        <dt class="col-sm-3">Province:</dt>
+        <dd class="col-sm-9">@Model.PermanentAddress.SelectedProvince</dd>
+        <dt class="col-sm-3">District:</dt>
+        <dd class="col-sm-9">@Model.PermanentAddress.SelectedDistrict</dd>
+        <dt class="col-sm-3">Municipality:</dt>
+        <dd class="col-sm-9">@Model.PermanentAddress.Municipality</dd>
+        <dt class="col-sm-3">Ward Number:</dt>
+        <dd class="col-sm-9">@Model.PermanentAddress.Ward</dd>
+        @if (!string.IsNullOrEmpty(Model.PermanentAddress.Tole))
+        {
+        <dt class="col-sm-3">Tole:</dt>
+        <dd class="col-sm-9">@Model.PermanentAddress.Tole</dd>
+        }
+    </dl>
+    }
+    else
+    {
+    <p>No permanent address provided.</p>
+    }
+</div>
+
+@if (Model.TemporaryAddress != null)
+{
+<div>
+    <h3>Temporary Address</h3>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-3">Province:</dt>
+        <dd class="col-sm-9">@Model.TemporaryAddress.SelectedProvince</dd>
+        <dt class="col-sm-3">District:</dt>
+        <dd class="col-sm-9">@Model.TemporaryAddress.SelectedDistrict</dd>
+        <dt class="col-sm-3">Municipality:</dt>
+        <dd class="col-sm-9">@Model.TemporaryAddress.Municipality</dd>
+        <dt class="col-sm-3">Ward Number:</dt>
+        <dd class="col-sm-9">@Model.TemporaryAddress.Ward</dd>
+        @if (!string.IsNullOrEmpty(Model.TemporaryAddress.Tole))
+        {
+        <dt class="col-sm-3">Tole:</dt>
+        <dd class="col-sm-9">@Model.TemporaryAddress.Tole</dd>
+        }
+    </dl>
+</div>
+}
+
+<div>
+    <h3>Bank Details</h3>
+    <hr />
+    @if (Model.BankDetails != null)
+    {
+    <dl class="row">
+        <dt class="col-sm-3">Bank Name:</dt>
+        <dd class="col-sm-9">@Model.BankDetails.BankName</dd>
+        <dt class="col-sm-3">Account Number:</dt>
+        <dd class="col-sm-9">@Model.BankDetails.AccountNumber</dd>
+        <dt class="col-sm-3">Branch:</dt>
+        <dd class="col-sm-9">@Model.BankDetails.Branch</dd>
+    </dl>
+    }
+    else
+    {
+    <p>No bank details provided.</p>
+    }
+</div>
+
+<div>
+    <h3>Other Details</h3>
+    <hr />
+    @if (Model.OtherDetails != null)
+    {
+    <dl class="row">
+        <dt class="col-sm-3">Father's Name:</dt>
+        <dd class="col-sm-9">@Model.OtherDetails.FatherName</dd>
+        <dt class="col-sm-3">Mother's Name:</dt>
+        <dd class="col-sm-9">@Model.OtherDetails.MotherName</dd>
+        <dt class="col-sm-3">Grandfather's Name:</dt>
+        <dd class="col-sm-9">@Model.OtherDetails.GrandFatherName</dd>
+        @if (!string.IsNullOrEmpty(Model.OtherDetails.SpouseName))
+        {
+        <dt class="col-sm-3">Spouse's Name:</dt>
+        <dd class="col-sm-9">@Model.OtherDetails.SpouseName</dd>
+        }
+    </dl>
+    }
+    else
+    {
+    <p>No other details provided.</p>
+    }
+</div>
+
+@if (Model.Nominee != null)
+{
+<div>
+    <h3>Nominee Details</h3>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-3">Nominee Name:</dt>
+        <dd class="col-sm-9">@Model.Nominee.FullName</dd>
+        <dt class="col-sm-3">Relationship:</dt>
+        <dd class="col-sm-9">@Model.Nominee.Relationship</dd>
+        <dt class="col-sm-3">CitizenshipNumber:</dt>
+        <dd class="col-sm-9">@Model.Nominee.CitizenshipNumber</dd>
+    </dl>
+</div>
+}
+
+<div class="mt-3">
+    <a asp-action="Index" asp-controller="Home" class="btn btn-secondary">Back to List</a>
+    @* <a asp-action="Edit" asp-route-id="@Model.Member.EmployeeId" class="btn btn-primary">Edit</a> *@
+</div>

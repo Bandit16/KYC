@@ -1,8 +1,8 @@
 ﻿@model KYC.ViewModels.KycFormViewModel
 @{
-ViewData["Title"] = "Create KYC";
+ViewData["Title"] = "Edit KYC";
 }
-<form asp-action="Create" method="post">
+<form asp-action="Create" method="put">
     @Html.AntiForgeryToken()
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
@@ -67,18 +67,12 @@ ViewData["Title"] = "Create KYC";
     <h4>Permanent Address</h4>
     <div class="form-group">
         <label asp-for="PermanentAddress.SelectedProvince"></label>
-        <select asp-for="PermanentAddress.SelectedProvince" class="form-control province-dropdown"
-            data-district-dropdown-id="PermanentAddress_SelectedDistrict">
-            <option value="">-- Select Province --</option>
-        </select>
+        <input asp-for="PermanentAddress.SelectedProvince" class="form-control" />
         <span asp-validation-for="PermanentAddress.SelectedProvince" class="text-danger"></span>
     </div>
     <div class="form-group">
         <label asp-for="PermanentAddress.SelectedDistrict"></label>
-        <select asp-for="PermanentAddress.SelectedDistrict" class="form-control district-dropdown"
-            id="PermanentAddress_SelectedDistrict">
-            <option value="">-- Select District --</option>
-        </select>
+        <input asp-for="PermanentAddress.SelectedDistrict" class="form-control" />
         <span asp-validation-for="PermanentAddress.SelectedDistrict" class="text-danger"></span>
     </div>
     <div class="form-group">
@@ -103,18 +97,12 @@ ViewData["Title"] = "Create KYC";
 
     <div class="form-group">
         <label asp-for="TemporaryAddress.SelectedProvince"></label>
-        <select asp-for="TemporaryAddress.SelectedProvince" class="form-control province-dropdown"
-            data-district-dropdown-id="TemporaryAddress_SelectedDistrict">
-            <option value="">-- Select Province --</option>
-        </select>
+        <input asp-for="TemporaryAddress.SelectedProvince" class="form-control" />
         <span asp-validation-for="TemporaryAddress.SelectedProvince" class="text-danger"></span>
     </div>
     <div class="form-group">
         <label asp-for="TemporaryAddress.SelectedDistrict"></label>
-        <select asp-for="TemporaryAddress.SelectedDistrict" class="form-control district-dropdown"
-            id="TemporaryAddress_SelectedDistrict">
-            <option value="">-- Select District --</option>
-        </select>
+        <input asp-for="TemporaryAddress.SelectedDistrict" class="form-control" />
         <span asp-validation-for="TemporaryAddress.SelectedDistrict" class="text-danger"></span>
     </div>
     <div class="form-group">
@@ -208,107 +196,4 @@ ViewData["Title"] = "Create KYC";
 @section Scripts {
 @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 
-<script>
-
-    document.addEventListener('DOMContentLoaded', function () {
-
-        const provinceDropdowns = document.querySelectorAll('.province-dropdown');
-
-        fetch('/api/lookupapi/provinces')
-            .then(response => response.json())
-            .then(provinces => {
-                console.log('Provinces loaded:', provinces);
-                provinceDropdowns.forEach(function (provinceSelectElement) {
-                    // Remove all options except the first (placeholder)
-                    provinceSelectElement.innerHTML = '<option value="">-- Select Province --</option>';
-                    if (provinces && provinces.length > 0) {
-                        provinces.forEach(function (province) {
-                            let option = document.createElement('option');
-                            option.value = province.id;
-                            option.textContent = province.name;
-                            provinceSelectElement.appendChild(option);
-                        });
-                    }
-                });
-            })
-            .catch(error => {
-                console.error('Error loading provinces:', error);
-                provinceDropdowns.forEach(function (provinceSelectElement) {
-                    provinceSelectElement.innerHTML = '<option value="">-- Error Loading Provinces --</option>';
-                });
-            });
-
-        provinceDropdowns.forEach(function (provinceSelectElement) {
-            provinceSelectElement.addEventListener('change', async function (event) {
-                const selectedProvince = event.target.value;
-                const districtDropdownId = event.target.dataset.districtDropdownId;
-                const districtSelectElement = document.getElementById(districtDropdownId);
-
-                if (!districtSelectElement) {
-                    console.error('District dropdown not found with ID:', districtDropdownId);
-                    return;
-                }
-
-                districtSelectElement.innerHTML = ''; // Clear existing options
-                let loadingOption = document.createElement('option');
-                loadingOption.value = '';
-                loadingOption.textContent = '-- Loading Districts --';
-                districtSelectElement.appendChild(loadingOption);
-
-                if (selectedProvince && selectedProvince !== '') {
-                    try {
-                        const response = await fetch('/api/LookupApi/districts/' + encodeURIComponent(selectedProvince));
-                        console.log('Fetching districts for province:', response);
-                        if (!response.ok) {
-                            console.error("Error fetching districts. Status:", response.status);
-                            districtSelectElement.innerHTML = ''; // Clear
-                            let errorOption = document.createElement('option');
-                            errorOption.value = '';
-                            errorOption.textContent = '-- Error Loading --';
-                            districtSelectElement.appendChild(errorOption);
-                            return;
-                        }
-
-                        const districts = await response.json();
-
-                        districtSelectElement.innerHTML = '';
-                        let defaultOption = document.createElement('option');
-                        defaultOption.value = '';
-                        defaultOption.textContent = '-- Select District --';
-                        districtSelectElement.appendChild(defaultOption);
-
-                        if (districts && districts.length > 0) {
-                            districts.forEach(function (district) {
-                                let option = document.createElement('option');
-                                option.value = district.name;
-                                option.textContent = district.name;
-                                districtSelectElement.appendChild(option);
-                            });
-                        } else {
-                            districtSelectElement.innerHTML = ''; // Clear
-                            let noDistrictOption = document.createElement('option');
-                            noDistrictOption.value = '';
-                            noDistrictOption.textContent = '-- No Districts Found --';
-                            districtSelectElement.appendChild(noDistrictOption);
-                        }
-                    } catch (error) {
-                        console.error("Network error or other issue fetching districts:", error);
-                        districtSelectElement.innerHTML = ''; // Clear
-                        let networkErrorOption = document.createElement('option');
-                        networkErrorOption.value = '';
-                        networkErrorOption.textContent = '-- Error Loading (Network) --';
-                        districtSelectElement.appendChild(networkErrorOption);
-                    }
-                } else {
-                    districtSelectElement.innerHTML = ''; // Clear
-                    let selectProvinceOption = document.createElement('option');
-                    selectProvinceOption.value = '';
-                    selectProvinceOption.textContent = '-- Select Province First --';
-                    districtSelectElement.appendChild(selectProvinceOption);
-                }
-            });
-        });
-
-
-    });
-</script>}
+}
