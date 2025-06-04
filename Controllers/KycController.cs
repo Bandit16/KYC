@@ -89,11 +89,13 @@ namespace KYC.Controllers
             var viewModel = new KycFormViewModel
             {
                 Member = member.ToMemberFormViewModel(),
+
                 PermanentAddress = member.Addresses.FirstOrDefault(a => a.AddressType == "Permanent")?.ToAddressFormViewModel() ?? new AddressFormViewModel(),
-                TemporaryAddress = member.Addresses.FirstOrDefault(a => a.AddressType == "Temporary")?.ToAddressFormViewModel(),
-                BankDetails = member.BankDetails.ToBankDetailFormViewModel(),
-                OtherDetails = member.OtherDetails.ToOtherDetailsFormViewModel(),
-                Nominee = member.Nominee?.ToNomineeFormViewModel()
+                TemporaryAddress = member.Addresses.FirstOrDefault(a => a.AddressType == "Temporary")?.ToAddressFormViewModel() ?? new AddressFormViewModel(),
+
+                BankDetails = member.BankDetails?.ToBankDetailFormViewModel() ?? new BankDetailFormViewModel(),
+                OtherDetails = member.OtherDetails?.ToOtherDetailsFormViewModel() ?? new OtherDetailsFormViewModel(),
+                Nominee = member.Nominee?.ToNomineeFormViewModel() ?? new NomineeFormViewModel()
             };
 
             return View(viewModel);
