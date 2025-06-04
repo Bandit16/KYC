@@ -116,13 +116,15 @@ namespace KYC.Controllers
             {
                 Member = existingmember.ToMemberFormViewModel(),
                 PermanentAddress = existingmember.Addresses.FirstOrDefault(a => a.AddressType == "Permanent")?.ToAddressFormViewModel() ?? new AddressFormViewModel(),
-                TemporaryAddress = existingmember.Addresses.FirstOrDefault(a => a.AddressType == "Temporary")?.ToAddressFormViewModel(),
-                BankDetails = existingmember.BankDetails.ToBankDetailFormViewModel(),
-                OtherDetails = existingmember.OtherDetails.ToOtherDetailsFormViewModel(),
-                Nominee = existingmember.Nominee?.ToNomineeFormViewModel()
+                TemporaryAddress = existingmember.Addresses.FirstOrDefault(a => a.AddressType == "Temporary")?.ToAddressFormViewModel() ?? new AddressFormViewModel(),
+                BankDetails = existingmember.BankDetails?.ToBankDetailFormViewModel() ?? new BankDetailFormViewModel(),
+                OtherDetails = existingmember.OtherDetails?.ToOtherDetailsFormViewModel() ?? new OtherDetailsFormViewModel(),
+                Nominee = existingmember.Nominee?.ToNomineeFormViewModel() ?? new NomineeFormViewModel()
             };
             return View(updateViewModel);
         }
+
+
         [HttpPost("edit/{id}")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, KycFormViewModel updatedViewModel)
@@ -144,7 +146,7 @@ namespace KYC.Controllers
             }
             try
             {
-                //hadto manually set values because couldnt use setvalues as it tried to update my fk.....couldnt use my mapping extension methods
+                //hadto manually set values because couldnt use setvalues/update as it tried to update my fk.....couldnt use my mapping extension methods
                 existingMember.FirstName = updatedViewModel.Member.FirstName;
                 existingMember.LastName = updatedViewModel.Member.LastName;
                 if (updatedViewModel.Member.MiddleName != null)
@@ -240,7 +242,7 @@ namespace KYC.Controllers
                 }
 
                 var existingTemporaryAddress = existingMember.Addresses.FirstOrDefault(a => a.AddressType == "Temporary");
-                if (updatedViewModel.TemporaryAddress != null && !string.IsNullOrEmpty(updatedViewModel.TemporaryAddress.Municipality))
+                if (updatedViewModel.TemporaryAddress != null)
                 {
                     var newTemporaryAddress = updatedViewModel.TemporaryAddress;
                     if (existingTemporaryAddress == null)

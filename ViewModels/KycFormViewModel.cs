@@ -5,12 +5,9 @@ using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
-// Remove: using static KYC.Models.KycFormModel; // If KYC.Models.KycFormModel is your domain model container
-// Remove: using KYC.Models; // If this brings in domain models directly for properties
 
 namespace KYC.ViewModels
 {
-    // ViewModel for Address fields in the form
     public class AddressFormViewModel
     {
         [Required]
